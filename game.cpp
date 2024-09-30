@@ -4,10 +4,14 @@
 
 #include "rules.hpp"
 
-/*Game::Game(std::string const& title, sf::Texture const texture)
-    : title{title} {};
+// Game::Game(std::string const& title, sf::Texture const texture)
+//: title{title}, texture{texture} {};
+Game::Game(std::string const& title, Parameters &parameters, sf::Sprite const& background)
+    : window_{sf::VideoMode(parameters.window_width, parameters.window_height), title},
+      flock_{parameters},
+      background_{background} {};
 
-      void Game::run() {
+void Game::run() {
   sf::Texture texture;
   texture.loadFromFile("sky.jpg");
   background_.setTexture(texture);
@@ -27,4 +31,5 @@
     flock_.evolve();
     flock_.draw(window_);
     window_.display();
-  }*/
+  }
+}
