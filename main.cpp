@@ -5,14 +5,13 @@
 #include <string>
 
 #include "boids.hpp"
-//#include "game.hpp"
 #include "rules.hpp"
 #include "vector2D.hpp"
 
 int main() {
   Parameters parameters;
 
-  std::cout << "\n \n SIMULATING FLOCK WITH BOIDS ALGORITHM \n \n"
+  std::cout << "\n \n SIMULATING FLOCK WITH BOIDS ALGORITHM \n"
             << "Do you want to proceed with default parameters? (Y/N)" << '\n';
   char choice;
   std::cin >> choice;
@@ -25,8 +24,6 @@ int main() {
     parameters.distance_separation = 30;
     parameters.view_angle = 2.5;
     parameters.space = toroidal;
-    // parameters.window_width = window_width;
-    // parameters.window_height = window_height};
   } else {
     try {
       std::cout << "Insert Number of Birds: ";
@@ -35,31 +32,31 @@ int main() {
       if (parameters.number <= 0)
         throw std::runtime_error{"Number of birds is invalid"};
 
-      std::cout << "Insert Separation Parameter: ";
+      std::cout << "Insert Separation Parameter (0-1): ";
       std::cin >> parameters.separation;
 
       if (parameters.separation < 0)
         throw std::runtime_error{"Separation coefficient is invalid"};
 
-      std::cout << "Insert Alignment Parameter: ";
+      std::cout << "Insert Alignment Parameter (0-1): ";
       std::cin >> parameters.alignment;
 
       if (parameters.alignment < 0)
         throw std::runtime_error{"Alignment coefficient is invalid"};
 
-      std::cout << "Insert Cohesion Parameter: ";
+      std::cout << "Insert Cohesion Parameter (0-1): ";
       std::cin >> parameters.cohesion;
 
       if (parameters.cohesion < 0)
         throw std::runtime_error{"Cohesion coefficient is invalid"};
 
-      std::cout << "Insert Distance: ";
+      std::cout << "Insert Distance (pixel): ";
       std::cin >> parameters.distance;
 
       if (parameters.distance < 0)
         throw std::runtime_error{"Distance is invalid"};
 
-      std::cout << "Insert Separation Distance: ";
+      std::cout << "Insert Separation Distance (pixel): ";
       std::cin >> parameters.distance_separation;
 
       if (parameters.distance_separation < 0)
@@ -96,31 +93,28 @@ int main() {
   Settings settings;
   settings.window_height = sf::VideoMode::getDesktopMode().height * 0.9;
   settings.window_width = sf::VideoMode::getDesktopMode().width * 0.9;
-  settings.max_speed = 10.;
-  settings.min_speed = 1.;
-
-  int const fps = 60;
+  settings.max_speed = 20.;
+  settings.min_speed = 5.;
+  int frame_per_second = 60;
 
   sf::Sprite background;
   sf::Texture texture;
   sf::RenderWindow window(
       sf::VideoMode(settings.window_width, settings.window_height),
       "Boids simulation");
-
-  window.setFramerateLimit(fps);
-  // float steps_per_evolution = (1000 / fps);
-  sf::Clock clock;
-
-  Flock flock(parameters);
-
+  window.setFramerateLimit(frame_per_second);
   texture.loadFromFile("sky.jpg");
   background.setTexture(texture);
-
   background.setScale(
       static_cast<float>(window.getSize().x) / texture.getSize().x,
       static_cast<float>(window.getSize().y) / texture.getSize().y);
 
+  sf::Clock clock;
+
+  Flock flock(parameters);
+
   flock.start(settings);
+
   sf::Text stats;
   sf::Font font;
   font.loadFromFile("cmuntt.ttf");
@@ -129,9 +123,9 @@ int main() {
   stats.setPosition(sf::Vector2f(0., 0.f));
   sf::RectangleShape box;
   box.setPosition(sf::Vector2f(0., 0.));
-  box.setSize(sf::Vector2f(520., 40));
+  box.setSize(sf::Vector2f(520., 20));
   box.setFillColor(
-      sf::Color::Black);  // deve stare fuori dal ciclo principale del programma
+      sf::Color::Black);
 
   while (window.isOpen()) {
     sf::Event event;
@@ -142,36 +136,21 @@ int main() {
     window.draw(background);
 
     sf::Time elapsed =
-        clock.restart();  // Restarta il clock e ottiene il delta time
+        clock.restart();
     float deltaTime = elapsed.asMilliseconds();
-    // double const dt = deltaTime.asSeconds();
     if (deltaTime > 1.f) {
-      deltaTime = 1.f;  // Limita il deltaTime se superiore a 1 secondo
+      deltaTime = 1.f;
     }
 
     flock.evolve(deltaTime, settings);
-
     flock.draw(window);
+
     stats.setString(flock.get_statistics());
     window.draw(box);
     window.draw(stats);
+
     window.display();
   }
-  // Game game ("Boids Simulation", parameters, background);
-  // game.run();
 
   return 0;
 }
-
-/* PARAMETRI CARINI
-Insert Number of Birds: 300
-Insert Separation Parameter: 0.3
-Insert Alignment Parameter: 0.2
-Insert Cohesion Parameter: 0.005
-Insert Distance: 170
-Insert Separation Distance: 30
-Insert View Angle (0-3.14): 3
-Select Space Type:
- (0) - Toroidal
- (1) - Rectangular
-0 */

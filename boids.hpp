@@ -3,7 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <random>
 
-//#include "game.hpp"
 #include "vector2D.hpp"
 
 enum Space { toroidal, rectangular };
@@ -22,8 +21,8 @@ struct Parameters {
 struct Settings { //quasi quasi posso eliminarla
   double window_width;
   double window_height;
-  double max_speed{150.};
-  double min_speed{30.};
+  double max_speed;
+  double min_speed;
 };
 
 struct Statistic {
@@ -44,24 +43,19 @@ class Flock {
   int number_;
   double distance_;
   double separation_;
-  // double InfluenceRange_;
   double alignment_;
   double cohesion_;
   double view_angle_;
   double distance_separation_;
   double window_width_;
   double window_height_;
-  // double max_speed_;
   Space space_;
-  // Game window_;
-  // Bird bird_;
  public:
   Flock(Parameters &parameters);
   void start(Settings settings);
-  // std::vector<Bird> get_flock() const {};
   void evolve(float deltaTime, Settings settings);
   void draw(sf::RenderWindow &window);
-  std::string get_statistics();  // VAI QUI E FINISCI
+  std::string get_statistics();
 };
 
 #endif

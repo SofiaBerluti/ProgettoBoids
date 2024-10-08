@@ -56,8 +56,8 @@ void Flock::start(Settings settings) {
   std::default_random_engine gen(rd());
   std::uniform_real_distribution<float> pos_x(0, settings.window_width);
   std::uniform_real_distribution<float> pos_y(0, settings.window_height);
-  std::uniform_real_distribution<float> vel_x(-100, 100);
-  std::uniform_real_distribution<float> vel_y(-100, 100);
+  std::uniform_real_distribution<float> vel_x(-settings.max_speed, settings.max_speed );
+  std::uniform_real_distribution<float> vel_y(-settings.max_speed, settings.max_speed);
 
   /*std::generate(flock_.begin(), flock_.end(), [&]() -> Bird {
     return {Vector2D{pos_x(gen), pos_y(gen)}, Vector2D{speed(gen), speed(gen)}};
@@ -100,9 +100,9 @@ void Flock::draw(sf::RenderWindow &window) {
   std::for_each(flock_.begin(), flock_.end(), [&](Bird &bird) {
     double angle = get_angle(bird.velocity, Vector2D{0, 1}) * 180 / 3.1415;
     if (bird.velocity.x < 0 && bird.velocity.y < 0) angle -= 180;
-    if (bird.velocity.x < 0 && bird.velocity.y > 0) angle = -90 - angle;
-    if (bird.velocity.x > 0 && bird.velocity.y < 0) angle = 180 - angle;
-
+    if (bird.velocity.x < 0 && bird.velocity.y > 0) angle -= 180;
+    if (bird.velocity.x > 0 && bird.velocity.y < 0) angle += 180;
+    if (bird.velocity.x > 0 && bird.velocity.y > 0) angle += 180;
     triangle.setRotation(angle);
     triangle.setPosition(sf::Vector2f(bird.position.x, bird.position.y));
     window.draw(triangle);
@@ -118,47 +118,20 @@ std::string Flock::get_statistics() {
         return sum + std::pow(bird.velocity.magnitude(), 2);
       });
 
-  double mean_speed = sum_speed / flock_.size();
+  double mean_speed = sum_speed / number_;  // flock_.size();
   double std_dev_speed =
-      std::sqrt(sum_speed2 * flock_.size() - pow(sum_speed, 2)) / flock_.size();
+      std::sqrt(sum_speed2 * number_ - pow(sum_speed, 2)) / flock_.size();
 
-  /*double mean_distance =
-      std::accumulate(flock_.begin(), flock_.end(), 0., [&](double distance2,
-     Bird& bird) { auto it = flock_.begin(); auto it_2 = std::next(it); double
-     sum1 = std::accumulate(it_2, flock_.end(), 0., [&](double distance1) {
-              return distance1 + (bird.position - it_2->position).magnitude();
-            });
-        return distance2 + sum1;
-      });*/
-  /* double total_distance = 0;
-   for (size_t i = 0; i < flock_.size(); ++i) {
-         // Usare un altro ciclo per iterare solo sugli uccelli successivi
-         total_distance += std::accumulate(flock_.begin() + i + 1, flock_.end(),
-   0.0,
-             [&](double sum, const Bird& bird2) {
-                 return sum + (flock_[i].position - bird2.position).magnitude();
-             });}
-
-*/
-  /* for (size_t i = 0; i < flock_.size(); ++i) {
-           total_distance += std::accumulate(flock_.begin() + i + 1,
-    flock_.end(), 0.0,
-               [&](double sum, const Bird& bird2) {
-                   return sum + flock_[i].distanceTo(bird2);
-               });
-       }
-
-       size_t num_pairs = (flock_.size() * (flock_.size() - 1)) / 2;
-       return total_distance / num_pairs;
-    }*/
-  double mean_distance = 0;
+  /*double mean_distance = 0;
   std::for_each(flock_.begin(), flock_.end(), [&](Bird &bird) {
     auto it = flock_.begin();
     auto it_2 = std::next(it);
     mean_distance += std::accumulate(
         it_2, flock_.end(), 0., [&](double sum_dist, Bird &bird2) {
-          double distance = (bird2.position - bird.position).magnitude();
-          return sum_dist + distance;
+          double distance_x = bird2.position.x - bird.position.x;
+          double distance_y = bird2.position.y - bird.position.y;
+          double distance = std::sqrt(distance_x * distance_x + distance_y *
+  distance_y); return sum_dist + distance;
         });
     return mean_distance;
   });
@@ -178,18 +151,18 @@ std::string Flock::get_statistics() {
   });
   std_dev_distance =
       std::sqrt(std_dev_distance / (flock_.size() * (flock_.size() - 1) / 2));
-
+*/
   std::ofstream file;
   file.open("data.csv", std::ios::app);
-  file << mean_distance << " , " << std_dev_distance << " , " << mean_speed
-       << " , " << std_dev_speed << "\n";
+  file /*<< mean_distance << " , " << std_dev_distance << " , " */
+      << mean_speed << " , " << std_dev_speed << "\n";
   file.close();
 
   // return Statistic{mean_distance, std_dev_distance, mean_speed,
   // std_dev_speed};
-  return "Mean distance and standard deviation: " +
+  return /* "Mean distance and standard deviation: " +
          std::to_string(mean_distance) + " +/- " +
-         std::to_string(std_dev_distance) + '\n' +
-         "Mean speed and standard deviation: " + std::to_string(mean_speed) +
-         " +/- " + std::to_string(std_dev_speed) + '\n';
+         std::to_string(std_dev_distance) + '\n' +*/
+      "Mean speed and standard deviation: " + std::to_string(mean_speed) +
+      " +/- " + std::to_string(std_dev_speed) + '\n';
 }
