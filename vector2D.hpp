@@ -3,19 +3,20 @@
 #include <cmath>
 #include <vector>
 
-class Vector2D {
- private:
-  float x_;
-  float y_;
+struct Vector2D { //struct
 
- public:
-  Vector2D(float x, float y);
+  float x;
+  float y;
+
+ //public:
+ // Vector2D(float x, float y);
   float magnitude() const;
-  float get_x() const;
-  float get_y() const;
-  void set_x(float new_x);
-  void set_y(float new_y);
+ // float get_x() const;
+ // float get_y() const;
+ // void set_x(float new_x);
+ // void set_y(float new_y);
 };
+
 // overload degli operatori
 bool operator==(Vector2D const& v1, Vector2D const& v2);
 bool operator!=(Vector2D const& v1, Vector2D const& v2);

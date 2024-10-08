@@ -7,7 +7,7 @@
 #include <vector>
 #include <iostream>
 
-#include "Boids.hpp"
+#include "boids.hpp"
 #include "vector2D.hpp"
 // aggiungere opzione if neighbours.size()=0
 //  Boid Position
@@ -15,7 +15,6 @@ inline std::vector<Bird> get_neighbours(std::vector<Bird> const& birds,
                                         Bird const& bird, double distance,
                                         double view_angle) {
   std::vector<Bird> neighbours;
-
   std::for_each(birds.begin(), birds.end(), [&](Bird const& other) {
     const double distance_birds = (bird.position - other.position).magnitude();
 
@@ -70,34 +69,26 @@ inline void boundaries_behavior(Bird& bird, double window_width,
                                 double window_height, Space space) {
   // std::transform(birds.begin(), birds.end(), birds.begin(), [&](Bird& bird) {
   if (space == toroidal) {
-    if (bird.position.get_x() <= 30.) {
-      std::cout<<"***********POSIZIONE X MINORE DI ZERO********";
-      bird.position.set_x(window_width);
-      std::cout<<"nuova pos bird: "<<bird.position.get_x();
-    } else if (bird.position.get_x() >= window_width) {
-      std::cout<<"***********POSIZIONE X MAGGIORE DI ZERO********";
-      bird.position.set_x(0);
-      std::cout<<"nuova pos bird: "<<bird.position.get_x();
+    if (bird.position.x <= 0.) {
+      bird.position.x = window_width;
+    } else if (bird.position.x >= window_width) {
+      bird.position.x = 0.;
     }
-    if (bird.position.get_y() <= 0.) {
-      std::cout<<"***********POSIZIONE Y MINORE DI ZERO********";
-      bird.position.set_y(window_height);
-      std::cout<<"nuova pos bird: "<<bird.position.get_x();
-    } else if (bird.position.get_y() >= window_height) {
-      std::cout<<"***********POSIZIONE Y MAGGIORE DI ZERO********";
-      bird.position.set_y(0);
-      std::cout<<"nuova pos bird: "<<bird.position.get_x();
+    if (bird.position.y <= 0.) {
+      bird.position.y = window_height;
+    } else if (bird.position.y >= window_height) {
+      bird.position.y = 0.;
     }
   } else if (space == rectangular) {
-    if (bird.position.get_x() == 0) {
-      bird.velocity.set_x(-bird.velocity.get_x());
-    } else if (bird.position.get_x() == window_width) {
-      bird.velocity.set_x(-bird.velocity.get_x());
+    if (bird.position.x <= 0.) {
+      bird.velocity.x = - (bird.velocity.x * 2);
+    } else if (bird.position.x >= window_width) {
+      bird.velocity.x = - (bird.velocity.x * 2);
     }
-    if (bird.position.get_y() == 0) {
-      bird.velocity.set_y(-bird.velocity.get_y());
-    } else if (bird.position.get_y() == window_height) {
-      bird.velocity.set_y(-bird.velocity.get_y());
+    if (bird.position.y <= 0.) {
+      bird.velocity.y = - (bird.velocity.y * 2);
+    } else if (bird.position.y >= window_height) {
+      bird.velocity.y = - (bird.velocity.y * 2);
     }
   }
   // });
@@ -109,17 +100,17 @@ inline void boundaries_behavior(Bird& bird, double window_width,
 
     }
 }*/
-inline void avoid_speeding(Bird& bird /*, double max_speed*/) {
+inline void avoid_speeding(Bird& bird, Settings settings /*, double max_speed*/) {
   // std::transform(birds.begin(), birds.end(), birds.begin(),
   //[&]() {
   if (bird.velocity == Vector2D{0, 0}) return bird.velocity += Vector2D{0, 10};
   auto speed = bird.velocity.magnitude();
-  if (speed > 15) {
+  if (speed > settings.max_speed) {
     bird.velocity /= speed;
-    return bird.velocity *= 5 /*max_speed*/;
-  } else if (speed < 5) {
+    return bird.velocity *= settings.max_speed;
+  } else if (speed < settings.min_speed) {
     bird.velocity /= speed;
-    bird.velocity *= 1;
+    bird.velocity *= settings.min_speed;
   }
 }
 //     });

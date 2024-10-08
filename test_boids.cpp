@@ -1,9 +1,11 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include "Boids.hpp"
+#include "boids.hpp"
 #include "rules.hpp"
 
 #include "doctest.h" 
  
+
+
   TEST_CASE("Avoid boundaries, toroidal space") {
     Bird b1{{-20, 500}, {0, 0}};
     Bird b2{{1001, 500}, {5, 0}};
