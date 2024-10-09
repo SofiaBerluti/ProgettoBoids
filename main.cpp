@@ -93,7 +93,7 @@ int main() {
   Settings settings;
   settings.window_height = sf::VideoMode::getDesktopMode().height * 0.9;
   settings.window_width = sf::VideoMode::getDesktopMode().width * 0.9;
-  settings.max_speed = 20.;
+  settings.max_speed = 15.;
   settings.min_speed = 5.;
   int frame_per_second = 60;
 
@@ -123,7 +123,7 @@ int main() {
   stats.setPosition(sf::Vector2f(0., 0.f));
   sf::RectangleShape box;
   box.setPosition(sf::Vector2f(0., 0.));
-  box.setSize(sf::Vector2f(520., 20));
+  box.setSize(sf::Vector2f(520., 40));
   box.setFillColor(
       sf::Color::Black);
 

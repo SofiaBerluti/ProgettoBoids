@@ -3,9 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <algorithm>
+#include <iostream>
 #include <numeric>
 #include <vector>
-#include <iostream>
 
 #include "boids.hpp"
 #include "vector2D.hpp"
@@ -81,14 +81,14 @@ inline void boundaries_behavior(Bird& bird, double window_width,
     }
   } else if (space == rectangular) {
     if (bird.position.x <= 0.) {
-      bird.velocity.x = - (bird.velocity.x * 2);
+      bird.velocity.x = -(bird.velocity.x * 2);
     } else if (bird.position.x >= window_width) {
-      bird.velocity.x = - (bird.velocity.x * 2);
+      bird.velocity.x = -(bird.velocity.x * 2);
     }
     if (bird.position.y <= 0.) {
-      bird.velocity.y = - (bird.velocity.y * 2);
+      bird.velocity.y = -(bird.velocity.y * 2);
     } else if (bird.position.y >= window_height) {
-      bird.velocity.y = - (bird.velocity.y * 2);
+      bird.velocity.y = -(bird.velocity.y * 2);
     }
   }
   // });
@@ -100,14 +100,17 @@ inline void boundaries_behavior(Bird& bird, double window_width,
 
     }
 }*/
-inline void avoid_speeding(Bird& bird, Settings settings /*, double max_speed*/) {
+inline void avoid_speeding(Bird& bird,
+                           Settings settings /*, double max_speed*/) {
   // std::transform(birds.begin(), birds.end(), birds.begin(),
   //[&]() {
   if (bird.velocity == Vector2D{0, 0}) return bird.velocity += Vector2D{0, 10};
   auto speed = bird.velocity.magnitude();
   if (speed > settings.max_speed) {
     bird.velocity /= speed;
-    return bird.velocity *= settings.max_speed;
+    bird.velocity *=
+        settings
+            .max_speed;  // non serve return, voglio solo modificare un valore
   } else if (speed < settings.min_speed) {
     bird.velocity /= speed;
     bird.velocity *= settings.min_speed;

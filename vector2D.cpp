@@ -4,12 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-//Vector2D::Vector2D(float x, float y) : x_{x}, y_{y} {};
 float Vector2D::magnitude() const { return std::sqrt(x * x + y * y); }
-/*float Vector2D::x const { return x_; };
-float Vector2D::y const { return y_; };
-void Vector2D::set_x(float new_x) { x_ = new_x; };
-void Vector2D::set_y(float new_y) { y_ = new_y; };*/
 
 bool operator==(Vector2D const& v1, Vector2D const& v2) {
   return v1.x == v2.x && v1.y == v2.y;

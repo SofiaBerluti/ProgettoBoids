@@ -122,7 +122,7 @@ std::string Flock::get_statistics() {
   double std_dev_speed =
       std::sqrt(sum_speed2 * number_ - pow(sum_speed, 2)) / flock_.size();
 
-  /*double mean_distance = 0;
+  double mean_distance = 0;
   std::for_each(flock_.begin(), flock_.end(), [&](Bird &bird) {
     auto it = flock_.begin();
     auto it_2 = std::next(it);
@@ -151,18 +151,18 @@ std::string Flock::get_statistics() {
   });
   std_dev_distance =
       std::sqrt(std_dev_distance / (flock_.size() * (flock_.size() - 1) / 2));
-*/
+
   std::ofstream file;
   file.open("data.csv", std::ios::app);
-  file /*<< mean_distance << " , " << std_dev_distance << " , " */
+  file << mean_distance << " , " << std_dev_distance << " , " 
       << mean_speed << " , " << std_dev_speed << "\n";
   file.close();
 
   // return Statistic{mean_distance, std_dev_distance, mean_speed,
   // std_dev_speed};
-  return /* "Mean distance and standard deviation: " +
+  return  "Mean distance and standard deviation: " +
          std::to_string(mean_distance) + " +/- " +
-         std::to_string(std_dev_distance) + '\n' +*/
+         std::to_string(std_dev_distance) + '\n' +
       "Mean speed and standard deviation: " + std::to_string(mean_speed) +
       " +/- " + std::to_string(std_dev_speed) + '\n';
 }
