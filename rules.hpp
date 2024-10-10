@@ -9,8 +9,7 @@
 
 #include "boids.hpp"
 #include "vector2D.hpp"
-// aggiungere opzione if neighbours.size()=0
-//  Boid Position
+
 inline std::vector<Bird> get_neighbours(std::vector<Bird> const& birds,
                                         Bird const& bird, double distance,
                                         double view_angle) {

@@ -11,12 +11,12 @@
 int main() {
   Parameters parameters;
 
-  std::cout << "\n \n SIMULATING FLOCK WITH BOIDS ALGORITHM \n"
+  std::cout << "\n \n SIMULATING FLOCK WITH BOIDS ALGORITHM \n \n"
             << "Do you want to proceed with default parameters? (Y/N)" << '\n';
   char choice;
   std::cin >> choice;
   if (choice == 'Y') {
-    parameters.number = 170;
+    parameters.number = 150;
     parameters.separation = 0.4;
     parameters.alignment = 0.6;
     parameters.cohesion = 0.008;
@@ -24,6 +24,19 @@ int main() {
     parameters.distance_separation = 30;
     parameters.view_angle = 2.5;
     parameters.space = toroidal;
+
+    std::cout << "*******************************\n"
+              << "Default parameters are: \n"
+              << "Birds number = " << parameters.number << "\n"
+              << "Separation parameter = " << parameters.separation << "\n"
+              << "Alignment parameter = " << parameters.alignment << "\n"
+              << "Cohesion parameter = " << parameters.cohesion << "\n"
+              << "Distance = " << parameters.distance << "\n"
+              << "Distance of separation = " << parameters.distance_separation
+              << "\n"
+              << "View angle = " << parameters.view_angle << "\n"
+              << "Space type (0->Toroidal, 1->Rectangular) = " << parameters.space
+              << "\n********************************\n";
   } else {
     try {
       std::cout << "Insert Number of Birds: ";
@@ -123,9 +136,8 @@ int main() {
   stats.setPosition(sf::Vector2f(0., 0.f));
   sf::RectangleShape box;
   box.setPosition(sf::Vector2f(0., 0.));
-  box.setSize(sf::Vector2f(520., 40));
-  box.setFillColor(
-      sf::Color::Black);
+  box.setSize(sf::Vector2f(510., 40));
+  box.setFillColor(sf::Color::Black);
 
   while (window.isOpen()) {
     sf::Event event;
@@ -135,8 +147,7 @@ int main() {
     window.clear();
     window.draw(background);
 
-    sf::Time elapsed =
-        clock.restart();
+    sf::Time elapsed = clock.restart();
     float deltaTime = elapsed.asMilliseconds();
     if (deltaTime > 1.f) {
       deltaTime = 1.f;

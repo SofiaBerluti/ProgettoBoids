@@ -27,37 +27,16 @@ Flock::Flock(Parameters &parameters)
       distance_separation_{parameters.distance_separation},
       space_{parameters.space} {};
 
-// std::vector<Bird> Flock::get_flock() const { return flock_; };
 
-/*void Bird::update(float deltaTime, std::vector<Bird> flock, Bird &bird,
-            double distance_, double view_angle_, double distance_separation_,
-            double separation_, double alignment_, double cohesion_) {
-  std::for_each(
-      flock.begin(), flock.end(),
-      [&](Bird &bird) {
-        std::vector<Bird> neighbours =
-            get_neighbours(flock, bird, distance_, view_angle_);
-        if (neighbours.size() != 0) {
-          bird.velocity +=
-              (separation(neighbours, bird, distance_separation_, separation_));
-          bird.velocity += (alignment(neighbours, bird, alignment_));
-          bird.velocity += (cohesion(neighbours, bird, cohesion_));
-        }
-        avoid_speeding(flock);
-        boundaries_behavior(bird, window_width, window_height, space);
-        bird.position += bird.velocity *
-                         deltaTime;  // Scala la velocità per il tempo trascorso
-      }
-
-  );
-}*/
 void Flock::start(Settings settings) {
   std::random_device rd;  // set seed
   std::default_random_engine gen(rd());
   std::uniform_real_distribution<float> pos_x(0, settings.window_width);
   std::uniform_real_distribution<float> pos_y(0, settings.window_height);
-  std::uniform_real_distribution<float> vel_x(-settings.max_speed, settings.max_speed );
-  std::uniform_real_distribution<float> vel_y(-settings.max_speed, settings.max_speed);
+  std::uniform_real_distribution<float> vel_x(-settings.max_speed,
+                                              settings.max_speed);
+  std::uniform_real_distribution<float> vel_y(-settings.max_speed,
+                                              settings.max_speed);
 
   /*std::generate(flock_.begin(), flock_.end(), [&]() -> Bird {
     return {Vector2D{pos_x(gen), pos_y(gen)}, Vector2D{speed(gen), speed(gen)}};
@@ -120,49 +99,37 @@ std::string Flock::get_statistics() {
 
   double mean_speed = sum_speed / number_;  // flock_.size();
   double std_dev_speed =
-      std::sqrt(sum_speed2 * number_ - pow(sum_speed, 2)) / flock_.size();
+      std::sqrt(sum_speed2 / number_ - pow(mean_speed, 2));
 
-  double mean_distance = 0;
+  double sum_distance = 0;
+  double sum_distance2 = 0;
   std::for_each(flock_.begin(), flock_.end(), [&](Bird &bird) {
-    auto it = flock_.begin();
-    auto it_2 = std::next(it);
-    mean_distance += std::accumulate(
-        it_2, flock_.end(), 0., [&](double sum_dist, Bird &bird2) {
-          double distance_x = bird2.position.x - bird.position.x;
-          double distance_y = bird2.position.y - bird.position.y;
-          double distance = std::sqrt(distance_x * distance_x + distance_y *
-  distance_y); return sum_dist + distance;
-        });
-    return mean_distance;
+    std::vector<double> distances;
+    std::for_each(flock_.begin(), flock_.end(), [&](Bird &other) {
+      if (&bird != &other) {
+        double distance = (other.position - bird.position).magnitude();
+        distances.push_back(distance);
+      }
+    });
+    auto min_iter = std::min_element(distances.begin(), distances.end());
+    double min_distance = *min_iter;
+    sum_distance += min_distance;
+    sum_distance2 += std::pow(min_distance, 2);
   });
-  mean_distance /= (flock_.size() * (flock_.size() - 1) /
-                    2);  // divido per il numero di coppie
-  double std_dev_distance = 0;
-  std::for_each(flock_.begin(), flock_.end(), [&](Bird &bird) {
-    auto it = flock_.begin();
-    auto it_2 = std::next(it);
-    std_dev_distance += std::accumulate(
-        it_2, flock_.end(), 0., [&](double sum_dist, Bird &bird2) {
-          double distance = std::pow(
-              (bird2.position - bird.position).magnitude() - mean_distance, 2);
-          return sum_dist + distance;
-        });
-    return std_dev_distance;
-  });
-  std_dev_distance =
-      std::sqrt(std_dev_distance / (flock_.size() * (flock_.size() - 1) / 2));
+
+  double mean_distance = sum_distance / number_;
+  //double mean_distance2 = sum_distance2 / number_;
+  double std_dev_distance = std::sqrt(sum_distance2 / number_ - pow(mean_distance, 2));
 
   std::ofstream file;
   file.open("data.csv", std::ios::app);
-  file << mean_distance << " , " << std_dev_distance << " , " 
-      << mean_speed << " , " << std_dev_speed << "\n";
+  file << mean_distance << " , " << std_dev_distance << " , " << mean_speed
+       << " , " << std_dev_speed << "\n";
   file.close();
 
-  // return Statistic{mean_distance, std_dev_distance, mean_speed,
-  // std_dev_speed};
-  return  "Mean distance and standard deviation: " +
+  return "Mean distance and standard deviation: " +
          std::to_string(mean_distance) + " +/- " +
          std::to_string(std_dev_distance) + '\n' +
-      "Mean speed and standard deviation: " + std::to_string(mean_speed) +
-      " +/- " + std::to_string(std_dev_speed) + '\n';
+         "Mean speed and standard deviation: " + std::to_string(mean_speed) +
+         " +/- " + std::to_string(std_dev_speed) + '\n';
 }
