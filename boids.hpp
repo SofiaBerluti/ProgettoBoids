@@ -18,18 +18,11 @@ struct Parameters {
   Space space;
 };
 
-struct Settings { //quasi quasi posso eliminarla
+struct Settings {
   double window_width;
   double window_height;
   double max_speed;
   double min_speed;
-};
-
-struct Statistic {
-  double mean_speed;
-  double std_dev_speed;
-  double mean_distance;
-  double std_dev_distance;
 };
 
 struct Bird {
@@ -50,6 +43,7 @@ class Flock {
   double window_width_;
   double window_height_;
   Space space_;
+
  public:
   Flock(Parameters &parameters);
   void start(Settings settings);
@@ -57,5 +51,12 @@ class Flock {
   void draw(sf::RenderWindow &window);
   std::string get_statistics();
 };
+
+/*struct Statistic {
+  double mean_speed;
+  double std_dev_speed;
+  double mean_distance;
+  double std_dev_distance;
+};*/
 
 #endif

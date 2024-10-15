@@ -11,12 +11,6 @@
 #include "rules.hpp"
 #include "vector2D.hpp"
 
-//#include <cassert>
-//#include <cmath>
-//#include <fstream>
-//#include <iostream>
-//#include <random>
-
 Flock::Flock(Parameters &parameters)
     : number_{parameters.number},
       distance_{parameters.distance},
@@ -27,7 +21,7 @@ Flock::Flock(Parameters &parameters)
       distance_separation_{parameters.distance_separation},
       space_{parameters.space} {};
 
-
+// generazione dei Bird
 void Flock::start(Settings settings) {
   std::random_device rd;  // set seed
   std::default_random_engine gen(rd());
@@ -38,17 +32,14 @@ void Flock::start(Settings settings) {
   std::uniform_real_distribution<float> vel_y(-settings.max_speed,
                                               settings.max_speed);
 
-  /*std::generate(flock_.begin(), flock_.end(), [&]() -> Bird {
-    return {Vector2D{pos_x(gen), pos_y(gen)}, Vector2D{speed(gen), speed(gen)}};
-  });*/
-  flock_.reserve(number_);  // SERVE DAVVERO?
+  flock_.reserve(number_);
   std::generate_n(back_inserter(flock_), number_, [&]() {
     return Bird{Vector2D{pos_x(gen), pos_y(gen)},
                 Vector2D{vel_x(gen), vel_y(gen)}};
   });
-  // return flock_;
 }
 
+// evoluzione dello stormo
 void Flock::evolve(float deltaTime, Settings settings) {
   std::for_each(flock_.begin(), flock_.end(),
                 [&](Bird &bird) {
@@ -63,9 +54,7 @@ void Flock::evolve(float deltaTime, Settings settings) {
                   avoid_speeding(bird, settings);
                   boundaries_behavior(bird, settings.window_width,
                                       settings.window_height, space_);
-                  bird.position +=
-                      (bird.velocity *
-                       deltaTime);  // Scala la velocità per il tempo trascorso
+                  bird.position += (bird.velocity * deltaTime);
                 }
 
   );
@@ -73,7 +62,6 @@ void Flock::evolve(float deltaTime, Settings settings) {
 
 void Flock::draw(sf::RenderWindow &window) {
   sf::CircleShape triangle(6, 3);
-
   triangle.setFillColor(sf::Color::Black);
   triangle.setOrigin(sf::Vector2f{3, 3});
   std::for_each(flock_.begin(), flock_.end(), [&](Bird &bird) {
@@ -88,6 +76,7 @@ void Flock::draw(sf::RenderWindow &window) {
   });
 };
 
+// calcolo di distanza e velocità media
 std::string Flock::get_statistics() {
   double sum_speed = std::accumulate(
       flock_.begin(), flock_.end(), 0.,
@@ -97,9 +86,8 @@ std::string Flock::get_statistics() {
         return sum + std::pow(bird.velocity.magnitude(), 2);
       });
 
-  double mean_speed = sum_speed / number_;  // flock_.size();
-  double std_dev_speed =
-      std::sqrt(sum_speed2 / number_ - pow(mean_speed, 2));
+  double mean_speed = sum_speed / number_;
+  double std_dev_speed = std::sqrt(sum_speed2 / number_ - pow(mean_speed, 2));
 
   double sum_distance = 0;
   double sum_distance2 = 0;
@@ -118,8 +106,8 @@ std::string Flock::get_statistics() {
   });
 
   double mean_distance = sum_distance / number_;
-  //double mean_distance2 = sum_distance2 / number_;
-  double std_dev_distance = std::sqrt(sum_distance2 / number_ - pow(mean_distance, 2));
+  double std_dev_distance =
+      std::sqrt(sum_distance2 / number_ - pow(mean_distance, 2));
 
   std::ofstream file;
   file.open("data.csv", std::ios::app);

@@ -11,6 +11,7 @@
 int main() {
   Parameters parameters;
 
+  // input e output
   std::cout << "\n \n SIMULATING FLOCK WITH BOIDS ALGORITHM \n \n"
             << "Do you want to proceed with default parameters? (Y/N)" << '\n';
   char choice;
@@ -35,8 +36,8 @@ int main() {
               << "Distance of separation = " << parameters.distance_separation
               << "\n"
               << "View angle = " << parameters.view_angle << "\n"
-              << "Space type (0->Toroidal, 1->Rectangular) = " << parameters.space
-              << "\n********************************\n";
+              << "Space type (0->Toroidal, 1->Rectangular) = "
+              << parameters.space << "\n********************************\n";
   } else {
     try {
       std::cout << "Insert Number of Birds: ";
@@ -103,13 +104,15 @@ int main() {
     }
   }
 
+  // inizializzazione di settings
   Settings settings;
   settings.window_height = sf::VideoMode::getDesktopMode().height * 0.9;
   settings.window_width = sf::VideoMode::getDesktopMode().width * 0.9;
-  settings.max_speed = 15.;
+  settings.max_speed = 15.;  // pixel/s
   settings.min_speed = 5.;
   int frame_per_second = 60;
 
+  // impostazione dello sfondo e del box per le statistiche
   sf::Sprite background;
   sf::Texture texture;
   sf::RenderWindow window(
@@ -122,12 +125,6 @@ int main() {
       static_cast<float>(window.getSize().x) / texture.getSize().x,
       static_cast<float>(window.getSize().y) / texture.getSize().y);
 
-  sf::Clock clock;
-
-  Flock flock(parameters);
-
-  flock.start(settings);
-
   sf::Text stats;
   sf::Font font;
   font.loadFromFile("cmuntt.ttf");
@@ -139,6 +136,13 @@ int main() {
   box.setSize(sf::Vector2f(510., 40));
   box.setFillColor(sf::Color::Black);
 
+  sf::Clock clock;
+
+  Flock flock(parameters);
+
+  flock.start(settings);
+
+  // ciclo principale
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {

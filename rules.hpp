@@ -10,6 +10,7 @@
 #include "boids.hpp"
 #include "vector2D.hpp"
 
+// individuazione dei vicini
 inline std::vector<Bird> get_neighbours(std::vector<Bird> const& birds,
                                         Bird const& bird, double distance,
                                         double view_angle) {
@@ -25,6 +26,7 @@ inline std::vector<Bird> get_neighbours(std::vector<Bird> const& birds,
   return neighbours;
 }
 
+// tre regole di volo
 inline Vector2D separation(std::vector<Bird>& neighbours, Bird& bird,
                            double distance_separation, double separation) {
   if (neighbours.size() == 0) return Vector2D{0, 0};
@@ -45,10 +47,7 @@ inline Vector2D alignment(std::vector<Bird>& neighbours, Bird& bird,
   Vector2D sum_neighbours_velocity = std::accumulate(
       neighbours.begin(), neighbours.end(), Vector2D{0, 0},
       [&](Vector2D sum, Bird& neighbour) { return sum + neighbour.velocity; });
-  sum_neighbours_velocity /=
-      (neighbours.size());  // qui c'era neighbours.size()-1, ma questo da dei
-                            // problemi ovviamente, perchè non posso dividere
-                            // per zero, per ora l'ho tolto
+  sum_neighbours_velocity /= (neighbours.size());
   sum_neighbours_velocity -= bird.velocity;
   return sum_neighbours_velocity * alignment;
 }
@@ -64,9 +63,9 @@ inline Vector2D cohesion(std::vector<Bird>& neighbours, Bird& bird,
   return mass_center * cohesion;
 }
 
+// comportamento ai bordi
 inline void boundaries_behavior(Bird& bird, double window_width,
                                 double window_height, Space space) {
-  // std::transform(birds.begin(), birds.end(), birds.begin(), [&](Bird& bird) {
   if (space == toroidal) {
     if (bird.position.x <= 0.) {
       bird.position.x = window_width;
@@ -90,31 +89,18 @@ inline void boundaries_behavior(Bird& bird, double window_width,
       bird.velocity.y = -(bird.velocity.y * 2);
     }
   }
-  // });
 }
 
-/*inline Vector2D avoid_speeding(Bird &bird, double max_speed = 6) {
-    auto speed = bird.velocity.magnitude();
-    if (speed > max_speed) {
-
-    }
-}*/
-inline void avoid_speeding(Bird& bird,
-                           Settings settings /*, double max_speed*/) {
-  // std::transform(birds.begin(), birds.end(), birds.begin(),
-  //[&]() {
+// controllo sulla velocità
+inline void avoid_speeding(Bird& bird, Settings settings) {
   if (bird.velocity == Vector2D{0, 0}) return bird.velocity += Vector2D{0, 10};
   auto speed = bird.velocity.magnitude();
   if (speed > settings.max_speed) {
     bird.velocity /= speed;
-    bird.velocity *=
-        settings
-            .max_speed;  // non serve return, voglio solo modificare un valore
-  } else if (speed < settings.min_speed) {
+    bird.velocity *= settings.max_speed;
     bird.velocity /= speed;
     bird.velocity *= settings.min_speed;
   }
 }
-//     });
 
 #endif

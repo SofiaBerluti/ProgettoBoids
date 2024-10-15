@@ -1,10 +1,16 @@
 #include "vector2D.hpp"
 
-//#include <vector>
 #include <cmath>
 #include <iostream>
 
 float Vector2D::magnitude() const { return std::sqrt(x * x + y * y); }
+
+float get_angle(Vector2D const& v1, Vector2D const& v2) {
+  if (v1.magnitude() == 0 || v2.magnitude() == 0) return 0;
+
+  return std::acos((v1 * v2) /
+                   (v1.magnitude() * v2.magnitude()));  // in radianti
+}
 
 bool operator==(Vector2D const& v1, Vector2D const& v2) {
   return v1.x == v2.x && v1.y == v2.y;
@@ -45,10 +51,3 @@ void operator/=(Vector2D& v1, float scalar) {
   v1.x = v1.x / scalar;
   v1.y = v1.y / scalar;
 }
-
-float get_angle(Vector2D const& v1, Vector2D const& v2) {
-  if (v1.magnitude() == 0 || v2.magnitude() == 0) return 0;
-
-  return std::acos((v1 * v2) /
-                   (v1.magnitude() * v2.magnitude()));  // in radianti
-}  // qua non gli andava bene, avevo dimenticato return a riga 57
