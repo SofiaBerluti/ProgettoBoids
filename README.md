@@ -3,7 +3,7 @@ uno stormo di boids in uno spazio bidimensionale, sulla base di tre regole: sepa
 e coesione. Sono inoltre state aggiunte delle regole finalizzate a gestire il comportamento ai confini
 dello schermo e il modulo della velocità dei boids.
 
-#Compilazione ed esecuzione con g++
+# Compilazione ed esecuzione con g++
 Per eseguire il programma tramite g++ è necessario aver installato la libreria grafica SFML e l'XServer MOBAXTERM.
 I comandi da lanciare per la compilazione e l'esecuzione sono:
 $ g++ -Wall -Wextra -fsanitize=address -lsfml-graphics -lsfml-window -lsfml-system
@@ -16,7 +16,7 @@ $ g++ -Wall -Wextra -fsanitize=address -lsfml-graphics -lsfml-window -lsfml-syst
 boids.cpp vector2D.cpp test rules.cpp -o test rules
 $ ./test rules
 
-#Compilazione ed esecuzione con CMake
+# Compilazione ed esecuzione con CMake
 In alternativa, è possibile utilizzare CMake tramite i seguenti comandi (tutte le direttive sono
 specificate nel file CMakeLists.txt):
 $ cmake -S . -B build -DCMAKE BUILD TYPE=Release
