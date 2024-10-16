@@ -6,9 +6,11 @@ dello schermo e il modulo della velocità dei boids.
 # Compilazione ed esecuzione con g++
 Per eseguire il programma tramite g++ è necessario aver installato la libreria grafica SFML e l'XServer MOBAXTERM.
 I comandi da lanciare per la compilazione e l'esecuzione sono:
-$ g++ -Wall -Wextra -fsanitize=address -lsfml-graphics -lsfml-window -lsfml-system
+```bash
+ g++ -Wall -Wextra -fsanitize=address -lsfml-graphics -lsfml-window -lsfml-system
 boids.cpp vector2D.cpp main.cpp -o boids
-$ ./boids
+```bash
+ ./boids
 Mentre per i test sono necessari i comandi:
 $ g++ -Wall -Wextra -fsanitize=address vector2D.cpp test vector2D.cpp -o test vector2D
 $ ./test
