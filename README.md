@@ -11,21 +11,38 @@ g++ -Wall -Wextra -fsanitize=address -lsfml-graphics -lsfml-window -lsfml-system
 boids.cpp vector2D.cpp main.cpp -o boids
 ```
 ```
- ./boids
+./boids
+```
 Mentre per i test sono necessari i comandi:
 ```
 g++ -Wall -Wextra -fsanitize=address vector2D.cpp test vector2D.cpp -o test vector2D
 ```
-$ ./test
-$ g++ -Wall -Wextra -fsanitize=address -lsfml-graphics -lsfml-window -lsfml-system
+```
+./test
+```
+```
+g++ -Wall -Wextra -fsanitize=address -lsfml-graphics -lsfml-window -lsfml-system
 boids.cpp vector2D.cpp test rules.cpp -o test rules
-$ ./test rules
+```
+```
+./test rules
+```
 
 # Compilazione ed esecuzione con CMake
 In alternativa, è possibile utilizzare CMake tramite i seguenti comandi (tutte le direttive sono
 specificate nel file CMakeLists.txt):
-$ cmake -S . -B build -DCMAKE BUILD TYPE=Release
-$ cmake --build build
-$ build/boids-sfml 
-$ build/rules.t 
-$ build/vector2D.t 
+```
+cmake -S . -B build -DCMAKE BUILD TYPE=Release
+```
+```
+cmake --build build
+```
+```
+build/boids-sfml
+```
+```
+build/rules.t
+```
+```
+build/vector2D.t
+```
