@@ -21,7 +21,7 @@ Flock::Flock(Parameters &parameters)
       distance_separation_{parameters.distance_separation},
       space_{parameters.space} {};
 
-// generazione dei Bird
+// generazione random dei Bird
 void Flock::start(Settings settings) {
   std::random_device rd;  // set seed
   std::default_random_engine gen(rd());
@@ -39,7 +39,7 @@ void Flock::start(Settings settings) {
   });
 }
 
-// evoluzione dello stormo
+// evoluzione di flock secondo le regole di volo
 void Flock::evolve(float deltaTime, Settings settings) {
   std::for_each(flock_.begin(), flock_.end(),
                 [&](Bird &bird) {
@@ -60,6 +60,7 @@ void Flock::evolve(float deltaTime, Settings settings) {
   );
 };
 
+//rappresentazione grafica dei Bird
 void Flock::draw(sf::RenderWindow &window) {
   sf::CircleShape triangle(6, 3);
   triangle.setFillColor(sf::Color::Black);
@@ -76,7 +77,7 @@ void Flock::draw(sf::RenderWindow &window) {
   });
 };
 
-// calcolo di distanza e velocità media
+// calcolo distanza e velocità media
 std::string Flock::get_statistics() {
   double sum_speed = std::accumulate(
       flock_.begin(), flock_.end(), 0.,

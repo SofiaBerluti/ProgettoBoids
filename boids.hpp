@@ -52,11 +52,4 @@ class Flock {
   std::string get_statistics();
 };
 
-/*struct Statistic {
-  double mean_speed;
-  double std_dev_speed;
-  double mean_distance;
-  double std_dev_distance;
-};*/
-
 #endif
