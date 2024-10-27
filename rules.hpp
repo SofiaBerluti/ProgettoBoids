@@ -98,6 +98,7 @@ inline void avoid_speeding(Bird& bird, Settings settings) {
   if (speed > settings.max_speed) {
     bird.velocity /= speed;
     bird.velocity *= settings.max_speed;
+  } else if (speed < settings.min_speed) {
     bird.velocity /= speed;
     bird.velocity *= settings.min_speed;
   }
